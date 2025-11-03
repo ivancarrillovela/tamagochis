@@ -9,11 +9,11 @@ public class Tamagochi implements Runnable {
 		COMIENDO, JUGANDO, DUCHANDOSE, ESPERANDO,
 	}
 
-	private final int TIEMPO_MAX_DE_VIDA = 1000 * 60 * 5;
+	private final int TIEMPO_DE_VIDA = 1000 * 60 * 5;
 	private final int TIEMPO_SUCIEDAD_INTERMEDIA = 1000 * 20 * 5;
 	private final int TIEMPO_SUCIEDAD_MAXIMA = 1000 * 20 * 10;
+	private final int MAX_TIEMPO_PARA_COMER = 1000 * 30;
 	private final int DURACION_DUCHA = 1000 * 5;
-	private final int MAX_TIEMPO_PARA_COMER = 120;
 	private final int NUMERO_MAX_PARA_JUGAR = 10;
 
 	private Random rnd = new Random();
@@ -32,6 +32,10 @@ public class Tamagochi implements Runnable {
 
 	public String getNombre() {
 		return nombre;
+	}
+	
+	public boolean getEstaVivo() {
+		return estaVivo;
 	}
 
 	@Override
@@ -56,19 +60,21 @@ public class Tamagochi implements Runnable {
 
 			}
 
-			// 1. Capturamos la señal de "Salir" del Cuidador
+			// La opción Salir del Cuidador me hace saltar esta excepción con .interrupt()
 		} catch (InterruptedException e) {
 
 			System.out.println(nombre + " ha sido interrumpido por el Cuidador. ¡Se va a dormir!");
 
 		} catch (Exception e) {
-			// 2. Capturamos cualquier otro error
+			
+			// Capturamos cualquier otro error
 			System.out.println("El hilo de " + nombre + " ha fallado: " + e.getMessage());
+			
 		} finally {
-			// 3. Marcamos que ha muerto, ya sea por interrupción,
-			// edad, suciedad o error.
+			
+			// Pase lo que pase, al final marcamos que ya no esta vivo
 			estaVivo = false;
-			System.out.println(nombre + " ha terminado a muerto...");
+
 		}
 
 	}
@@ -79,10 +85,8 @@ public class Tamagochi implements Runnable {
 
 		if (tiempoTranscurrido >= TIEMPO_SUCIEDAD_MAXIMA) {
 
-			System.out.println("Huele como a muerto...");
-
+			System.out.println("\nHuele como a muerto...");
 			matarlo();
-
 			return;
 
 		}
@@ -90,7 +94,7 @@ public class Tamagochi implements Runnable {
 		if (tiempoTranscurrido >= TIEMPO_SUCIEDAD_INTERMEDIA && !avisoSuciedad) {
 
 			avisoSuciedad = true;
-			System.out.println("¡" + nombre + " esta empezando a estar muy sucio!");
+			System.out.println("\n¡" + nombre + " esta empezando a estar muy sucio!");
 
 		}
 
@@ -100,9 +104,9 @@ public class Tamagochi implements Runnable {
 
 		long tiempoVivido = System.currentTimeMillis() - tiempoNacimiento;
 
-		if (tiempoVivido >= TIEMPO_MAX_DE_VIDA) {
+		if (tiempoVivido >= TIEMPO_DE_VIDA) {
 
-			System.out.println("Parece que " + nombre + " ya es un anciano");
+			System.out.println("\nParece que " + nombre + " ya es un anciano");
 			matarlo();
 
 		}
