@@ -1,6 +1,7 @@
 package org.cuatrovientos.dam.psp.tamagochis;
 
 import java.util.Random;
+import java.util.Scanner;
 
 public class Tamagochi implements Runnable {
 
@@ -19,8 +20,8 @@ public class Tamagochi implements Runnable {
 	private long tiempoNacimiento;
 	private long tiempoSuciedad;
 	private Estado estadoActual = Estado.ESPERANDO;
+	boolean avisoSuciedad = false;
 	private boolean estaVivo = true;
-	private int respuestaSumaJuego = 0;
 
 	public Tamagochi(String nombre) {
 
@@ -47,19 +48,21 @@ public class Tamagochi implements Runnable {
 	private void comprobarSuciedad() {
 
 		long tiempoTranscurrido = System.currentTimeMillis() - tiempoSuciedad;
+		
 
 		if (tiempoTranscurrido >= TIEMPO_SUCIEDAD_MAXIMA) {
 
 			System.out.println("Huele como a muerto...");
 
 			matarlo();
-			
+
 			return;
 
 		}
 
-		if (tiempoTranscurrido >= TIEMPO_SUCIEDAD_INTERMEDIA) {
-
+		if (tiempoTranscurrido >= TIEMPO_SUCIEDAD_INTERMEDIA && !avisoSuciedad) {
+			
+			avisoSuciedad = true;
 			System.out.println("¡" + nombre + " esta empezando a estar muy sucio!");
 
 		}
@@ -80,8 +83,11 @@ public class Tamagochi implements Runnable {
 
 	public void darDeComer() {
 
-		if (comprobarSiEstaOcupado())
+		if (comprobarSiEstaOcupado()) {
+
 			return;
+
+		}
 
 		try {
 
@@ -104,43 +110,59 @@ public class Tamagochi implements Runnable {
 
 	}
 
-	public void hacerPreguntaJuego() {
+	public void jugar(Scanner scanner) {
 
 		if (estadoActual != Estado.ESPERANDO || estadoActual != Estado.JUGANDO) {
 
 			System.out.println(
 					nombre + " ahora mismo esta " + estadoActual.toString() + " ¡Tienes que esperar a que termine!");
+			return;
 
-		} else {
+		}
+
+		try {
 
 			estadoActual = Estado.JUGANDO;
 			System.out.println("¡" + nombre + " ha empezado a jugar!");
 
 			int num1 = rnd.nextInt(1, NUMERO_MAX_PARA_JUGAR);
 			int num2 = rnd.nextInt(NUMERO_MAX_PARA_JUGAR - num1);
-			respuestaSumaJuego = num1 + num2;
+			int respuestaCorrecta = num1 + num2;
+			int respuestaCuidador;
 
-			System.out.println("¿Cuánto es " + num1 + " + " + num2 + "?: ");
+			boolean esCorrecto = false;
 
-		}
+			while (!esCorrecto) {
 
-	}
+				System.out.println("¿Cuánto es " + num1 + " + " + num2 + "?: ");
+				respuestaCuidador = Integer.parseInt(scanner.nextLine());
 
-	public boolean comprobarRespuestaJuego(int respuesta) {
+				esCorrecto = respuestaCuidador == respuestaCorrecta;
 
-		boolean esCorrecto = (respuesta == respuestaSumaJuego);
+				System.out.println(esCorrecto ? "¡YUHUUUUUU!¡HAS ACERTADO!¡FIN DEL JUEGO!"
+						: "¡OH NO!¡HAS FALLADO!¡VUELVE A INTENTARLO!");
 
-		if (esCorrecto)
+			}
+
+		} catch (Exception e) {
+			
+			System.out.println(nombre + " ha sido interrumpido mientras jugabais...");
+			
+		} finally {
+			
 			estadoActual = Estado.ESPERANDO;
-
-		return esCorrecto;
+			
+		}
 
 	}
 
 	public void darUnaDucha() {
 
-		if (comprobarSiEstaOcupado())
+		if (comprobarSiEstaOcupado()) {
+
 			return;
+
+		}
 
 		try {
 
@@ -164,9 +186,6 @@ public class Tamagochi implements Runnable {
 	}
 
 	public void matarlo() {
-
-		if (comprobarSiEstaOcupado())
-			return;
 
 		if (!estaVivo) {
 
