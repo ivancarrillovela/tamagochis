@@ -14,7 +14,10 @@ public class Tamagochi implements Runnable {
 	private Estado estadoActual = Estado.ESPERANDO;
 	private boolean estaVivo = true;
 
+	private int respuestaCorrectaJuego = 0;
+
 	private final int MAX_TIEMPO_PARA_COMER = 120;
+	private final int NUMERO_MAX_PARA_JUGAR = 10;
 
 	public Tamagochi(String nombre) {
 		super();
@@ -26,22 +29,23 @@ public class Tamagochi implements Runnable {
 
 	}
 
-	public synchronized void darDeComer() {
+	public void darDeComer() {
 
-		if (comprobarSiEstaOcupado()) return;
+		if (comprobarSiEstaOcupado())
+			return;
 
 		try {
 
 			int tiempoEnComer = rnd.nextInt(MAX_TIEMPO_PARA_COMER);
 			estadoActual = Estado.COMIENDO;
 
-			System.out.println("¡" + nombre + "ha empezado a comer!");
+			System.out.println("¡" + nombre + " ha empezado a comer!");
 			Thread.sleep(tiempoEnComer);
-			System.out.println("¡" + nombre + "ha terminado de comer!");
+			System.out.println("¡" + nombre + " ha terminado de comer!");
 
 		} catch (InterruptedException e) {
 
-			System.out.println(nombre + "ha sido interrumpido mientras comía...");
+			System.out.println(nombre + " ha sido interrumpido mientras comía...");
 
 		} finally {
 
@@ -51,17 +55,50 @@ public class Tamagochi implements Runnable {
 
 	}
 
+	public void hacerPreguntaJuego() {
+
+		if (estadoActual != Estado.ESPERANDO || estadoActual != Estado.JUGANDO) {
+
+			System.out.println(
+					nombre + " ahora mismo esta " + estadoActual.toString() + " ¡Tienes que esperar a que termine!");
+
+		} else {
+
+			estadoActual = Estado.JUGANDO;
+			System.out.println("¡" + nombre + " ha empezado a jugar!");
+
+			int num1 = rnd.nextInt(1, NUMERO_MAX_PARA_JUGAR);
+			int num2 = rnd.nextInt(NUMERO_MAX_PARA_JUGAR - num1);
+			respuestaCorrectaJuego = num1 + num2;
+
+			System.out.println("¿Cuánto es " + num1 + " + " + num2 + "?: ");
+
+		}
+
+	}
+
+	public boolean comprobarRespuestaJuego(int respuesta) {
+
+		boolean esCorrecto = (respuesta == respuestaCorrectaJuego);
+
+		if (esCorrecto)
+			estadoActual = Estado.ESPERANDO;
+
+		return esCorrecto;
+
+	}
+
 	private boolean comprobarSiEstaOcupado() {
 
 		if (estadoActual != Estado.ESPERANDO) {
 
 			System.out.println(
 					nombre + " ahora mismo esta " + estadoActual.toString() + " ¡Tienes que esperar a que termine!");
-			
+
 			return true;
 
 		}
-		
+
 		return false;
 
 	}
