@@ -13,6 +13,7 @@ public class Tamagochi implements Runnable {
 	private long horaNacimiento = System.currentTimeMillis();
 	private Estado estadoActual = Estado.ESPERANDO;
 	private boolean estaVivo = true;
+	private int suciedad = 0;
 
 	private int respuestaCorrectaJuego = 0;
 
@@ -86,6 +87,31 @@ public class Tamagochi implements Runnable {
 
 		return esCorrecto;
 
+	}
+	
+	public void darUnaDucha() {
+		
+		if (comprobarSiEstaOcupado())
+			return;
+
+		try {
+
+			estadoActual = Estado.DUCHANDOSE;
+
+			System.out.println("¡" + nombre + " se está dando una ducha!");
+			Thread.sleep(5);
+			System.out.println("¡" + nombre + " ha terminado de ducharse!");
+
+		} catch (InterruptedException e) {
+
+			System.out.println(nombre + " ha sido interrumpido mientras se daba una ducha... ¡Vaya vergüenza!");
+
+		} finally {
+
+			estadoActual = Estado.ESPERANDO;
+
+		}
+		
 	}
 
 	private boolean comprobarSiEstaOcupado() {
