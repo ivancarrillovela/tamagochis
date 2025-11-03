@@ -88,9 +88,9 @@ public class Tamagochi implements Runnable {
 		return esCorrecto;
 
 	}
-	
+
 	public void darUnaDucha() {
-		
+
 		if (comprobarSiEstaOcupado())
 			return;
 
@@ -111,7 +111,25 @@ public class Tamagochi implements Runnable {
 			estadoActual = Estado.ESPERANDO;
 
 		}
+
+	}
+
+	public void matarlo() {
+
+		if (comprobarSiEstaOcupado())
+			return;
+
+		if (!estaVivo) {
+
+			System.out.println(nombre + " ya esta muerto ¡Dejalo descansar en paz!");
+			return;
+
+		}
 		
+		estaVivo = false;
+
+		System.out.println("R.I.P " + nombre + " acaba de morir...");
+
 	}
 
 	private boolean comprobarSiEstaOcupado() {
