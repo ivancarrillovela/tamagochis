@@ -27,10 +27,8 @@ public class Tamagochi implements Runnable {
 	}
 
 	public synchronized void darDeComer() {
-		
-		if (estadoActual != Estado.ESPERANDO) {
-			System.out.println(nombre + " ahora mismo esta " + estadoActual.toString() + " ¡Tienes que esperar a que termine!");
-		}
+
+		if (comprobarSiEstaOcupado()) return;
 
 		try {
 
@@ -44,12 +42,27 @@ public class Tamagochi implements Runnable {
 		} catch (InterruptedException e) {
 
 			System.out.println(nombre + "ha sido interrumpido mientras comía...");
-			
+
 		} finally {
 
 			estadoActual = Estado.ESPERANDO;
 
 		}
+
+	}
+
+	private boolean comprobarSiEstaOcupado() {
+
+		if (estadoActual != Estado.ESPERANDO) {
+
+			System.out.println(
+					nombre + " ahora mismo esta " + estadoActual.toString() + " ¡Tienes que esperar a que termine!");
+			
+			return true;
+
+		}
+		
+		return false;
 
 	}
 
