@@ -12,6 +12,7 @@ public class Tamagochi implements Runnable {
 	private final int TIEMPO_MAX_DE_VIDA = 1000 * 60 * 5;
 	private final int TIEMPO_SUCIEDAD_INTERMEDIA = 1000 * 20 * 5;
 	private final int TIEMPO_SUCIEDAD_MAXIMA = 1000 * 20 * 10;
+	private final int DURACION_DUCHA = 1000 * 5;
 	private final int MAX_TIEMPO_PARA_COMER = 120;
 	private final int NUMERO_MAX_PARA_JUGAR = 10;
 
@@ -29,18 +30,45 @@ public class Tamagochi implements Runnable {
 
 	}
 
+	public String getNombre() {
+		return nombre;
+	}
+
 	@Override
 	public void run() {
 
 		tiempoNacimiento = System.currentTimeMillis();
 		tiempoSuciedad = tiempoNacimiento;
 
-		while (estaVivo) {
+		try {
 
-			comprobarSuciedad();
+			while (estaVivo) {
 
-			comprobarTiempoDeVida();
+				Thread.sleep(1000);
 
+				if (estaVivo) {
+					comprobarSuciedad();
+				}
+
+				if (estaVivo) {
+					comprobarTiempoDeVida();
+				}
+
+			}
+
+			// 1. Capturamos la señal de "Salir" del Cuidador
+		} catch (InterruptedException e) {
+
+			System.out.println(nombre + " ha sido interrumpido por el Cuidador. ¡Se va a dormir!");
+
+		} catch (Exception e) {
+			// 2. Capturamos cualquier otro error
+			System.out.println("El hilo de " + nombre + " ha fallado: " + e.getMessage());
+		} finally {
+			// 3. Marcamos que ha muerto, ya sea por interrupción,
+			// edad, suciedad o error.
+			estaVivo = false;
+			System.out.println(nombre + " ha terminado a muerto...");
 		}
 
 	}
@@ -48,7 +76,6 @@ public class Tamagochi implements Runnable {
 	private void comprobarSuciedad() {
 
 		long tiempoTranscurrido = System.currentTimeMillis() - tiempoSuciedad;
-		
 
 		if (tiempoTranscurrido >= TIEMPO_SUCIEDAD_MAXIMA) {
 
@@ -61,7 +88,7 @@ public class Tamagochi implements Runnable {
 		}
 
 		if (tiempoTranscurrido >= TIEMPO_SUCIEDAD_INTERMEDIA && !avisoSuciedad) {
-			
+
 			avisoSuciedad = true;
 			System.out.println("¡" + nombre + " esta empezando a estar muy sucio!");
 
@@ -83,10 +110,8 @@ public class Tamagochi implements Runnable {
 
 	public void darDeComer() {
 
-		if (comprobarSiEstaOcupado()) {
-
+		if (comprobarSiEstaOcupado() || comprobarSiEstaMuerto()) {
 			return;
-
 		}
 
 		try {
@@ -112,10 +137,8 @@ public class Tamagochi implements Runnable {
 
 	public void jugar(Scanner scanner) {
 
-		if (comprobarSiEstaOcupado()) {
-
+		if (comprobarSiEstaOcupado() || comprobarSiEstaMuerto()) {
 			return;
-
 		}
 
 		try {
@@ -123,7 +146,7 @@ public class Tamagochi implements Runnable {
 			estadoActual = Estado.JUGANDO;
 			System.out.println("¡" + nombre + " ha empezado a jugar!");
 
-			int num1 = rnd.nextInt(1, NUMERO_MAX_PARA_JUGAR);
+			int num1 = rnd.nextInt(1, NUMERO_MAX_PARA_JUGAR - 1);
 			int num2 = rnd.nextInt(1, NUMERO_MAX_PARA_JUGAR - num1);
 			int respuestaCorrecta = num1 + num2;
 			int respuestaCuidador;
@@ -143,23 +166,21 @@ public class Tamagochi implements Runnable {
 			}
 
 		} catch (Exception e) {
-			
+
 			System.out.println(nombre + " ha sido interrumpido mientras jugabais...");
-			
+
 		} finally {
-			
+
 			estadoActual = Estado.ESPERANDO;
-			
+
 		}
 
 	}
 
 	public void darUnaDucha() {
 
-		if (comprobarSiEstaOcupado()) {
-
+		if (comprobarSiEstaOcupado() || comprobarSiEstaMuerto()) {
 			return;
-
 		}
 
 		try {
@@ -167,7 +188,7 @@ public class Tamagochi implements Runnable {
 			estadoActual = Estado.DUCHANDOSE;
 
 			System.out.println("¡" + nombre + " se está dando una ducha!");
-			Thread.sleep(5);
+			Thread.sleep(DURACION_DUCHA);
 			tiempoSuciedad = System.currentTimeMillis();
 			System.out.println("¡" + nombre + " ha terminado de ducharse!");
 
@@ -185,11 +206,8 @@ public class Tamagochi implements Runnable {
 
 	public void matarlo() {
 
-		if (!estaVivo) {
-
-			System.out.println(nombre + " ya esta muerto ¡Dejalo descansar en paz!");
+		if (comprobarSiEstaOcupado() || comprobarSiEstaMuerto()) {
 			return;
-
 		}
 
 		estaVivo = false;
@@ -207,6 +225,17 @@ public class Tamagochi implements Runnable {
 
 			return true;
 
+		}
+
+		return false;
+
+	}
+
+	private boolean comprobarSiEstaMuerto() {
+
+		if (!estaVivo) {
+			System.out.println(nombre + " ya esta muerto ¡Dejalo descansar en paz!");
+			return true;
 		}
 
 		return false;
