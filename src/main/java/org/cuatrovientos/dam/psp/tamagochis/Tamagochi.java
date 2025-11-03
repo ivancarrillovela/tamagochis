@@ -112,10 +112,8 @@ public class Tamagochi implements Runnable {
 
 	public void jugar(Scanner scanner) {
 
-		if (estadoActual != Estado.ESPERANDO || estadoActual != Estado.JUGANDO) {
+		if (comprobarSiEstaOcupado()) {
 
-			System.out.println(
-					nombre + " ahora mismo esta " + estadoActual.toString() + " ¡Tienes que esperar a que termine!");
 			return;
 
 		}
@@ -126,7 +124,7 @@ public class Tamagochi implements Runnable {
 			System.out.println("¡" + nombre + " ha empezado a jugar!");
 
 			int num1 = rnd.nextInt(1, NUMERO_MAX_PARA_JUGAR);
-			int num2 = rnd.nextInt(NUMERO_MAX_PARA_JUGAR - num1);
+			int num2 = rnd.nextInt(1, NUMERO_MAX_PARA_JUGAR - num1);
 			int respuestaCorrecta = num1 + num2;
 			int respuestaCuidador;
 
