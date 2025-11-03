@@ -19,6 +19,8 @@ public class Tamagochi implements Runnable {
 
 	private final int MAX_TIEMPO_PARA_COMER = 120;
 	private final int NUMERO_MAX_PARA_JUGAR = 10;
+	private final int TIEMPO_QUE_TARDA_EN_ENSUCIARSE = 20;
+	private final int SUCIEDAD_MAXIMA = 10;
 
 	public Tamagochi(String nombre) {
 		super();
@@ -27,6 +29,24 @@ public class Tamagochi implements Runnable {
 
 	@Override
 	public void run() {
+		
+		while (estaVivo) {
+			
+			try {
+				
+				Thread.sleep(TIEMPO_QUE_TARDA_EN_ENSUCIARSE);
+				
+				if (suciedad >= SUCIEDAD_MAXIMA)
+					matarlo();
+				
+			} catch (InterruptedException e) {
+
+				e.printStackTrace();
+				
+			}
+			
+			
+		}
 
 	}
 
@@ -100,6 +120,7 @@ public class Tamagochi implements Runnable {
 
 			System.out.println("¡" + nombre + " se está dando una ducha!");
 			Thread.sleep(5);
+			suciedad = 0;
 			System.out.println("¡" + nombre + " ha terminado de ducharse!");
 
 		} catch (InterruptedException e) {
