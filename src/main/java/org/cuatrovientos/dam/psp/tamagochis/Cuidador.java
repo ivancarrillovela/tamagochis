@@ -39,4 +39,28 @@ public class Cuidador {
 
 	}
 
+	private static void mostrarTamagochisVivos() {
+
+		if (guarderia.isEmpty()) {
+
+			System.out.println("> No hay Tamagochis en la guardería");
+			return;
+
+		}
+		String strTamagochis = "";
+
+		for (Tamagochi t : guarderia.keySet()) {
+
+			if (t.getEstaVivo()) {
+
+				strTamagochis += "> " + t.getNombre() + "  ";
+
+			}
+
+		}
+
+		System.out.println(strTamagochis != "" ? strTamagochis : "> No hay Tamagochis vivos actualmente");
+
+	}
+
 }
