@@ -8,19 +8,21 @@ public class Tamagochi implements Runnable {
 		COMIENDO, JUGANDO, DUCHANDOSE, ESPERANDO,
 	}
 
+	private final int TIEMPO_MAX_DE_VIDA = 5 * 60 * 1000;
+	private final int MAX_TIEMPO_PARA_COMER = 120;
+	private final int TIEMPO_QUE_TARDA_EN_ENSUCIARSE = 20;
+	private final int NUMERO_MAX_PARA_JUGAR = 10;
+	private static final int SUCIEDAD_INTERMEDIA = 5;
+	private final int SUCIEDAD_MAXIMA = 10;
+
 	private Random rnd = new Random();
 	private String nombre;
-	private long horaNacimiento = System.currentTimeMillis();
+	private long horaNacimiento;
 	private Estado estadoActual = Estado.ESPERANDO;
 	private boolean estaVivo = true;
 	private int suciedad = 0;
 
 	private int respuestaCorrectaJuego = 0;
-
-	private final int MAX_TIEMPO_PARA_COMER = 120;
-	private final int NUMERO_MAX_PARA_JUGAR = 10;
-	private final int TIEMPO_QUE_TARDA_EN_ENSUCIARSE = 20;
-	private final int SUCIEDAD_MAXIMA = 10;
 
 	public Tamagochi(String nombre) {
 		super();
@@ -30,22 +32,51 @@ public class Tamagochi implements Runnable {
 	@Override
 	public void run() {
 		
+		horaNacimiento = System.currentTimeMillis();
+
 		while (estaVivo) {
-			
+
 			try {
-				
+
 				Thread.sleep(TIEMPO_QUE_TARDA_EN_ENSUCIARSE);
+
+				comprobarSuciedad();
 				
-				if (suciedad >= SUCIEDAD_MAXIMA)
-					matarlo();
-				
+				comprobarTiempoDeVida();
+
 			} catch (InterruptedException e) {
 
 				e.printStackTrace();
-				
+
 			}
+
+		}
+
+	}
+
+	private void comprobarTiempoDeVida() {
+		
+		long tiempoVivido = System.currentTimeMillis() - horaNacimiento;
+		
+		if (tiempoVivido > TIEMPO_MAX_DE_VIDA) {
 			
+			System.out.println("Parece que " + nombre + " ya es un anciano");
+			matarlo();
 			
+		}
+	}
+
+	private void comprobarSuciedad() {
+
+		if (suciedad == SUCIEDAD_MAXIMA)
+			
+			System.out.println("Huele como a muerto...");
+			matarlo();
+
+		if (suciedad == SUCIEDAD_INTERMEDIA) {
+
+			System.out.println("¡" + nombre + " esta empezando a estar muy sucio!");
+
 		}
 
 	}
@@ -146,7 +177,7 @@ public class Tamagochi implements Runnable {
 			return;
 
 		}
-		
+
 		estaVivo = false;
 
 		System.out.println("R.I.P " + nombre + " acaba de morir...");
