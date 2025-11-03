@@ -8,77 +8,74 @@ public class Tamagochi implements Runnable {
 		COMIENDO, JUGANDO, DUCHANDOSE, ESPERANDO,
 	}
 
-	private final int TIEMPO_MAX_DE_VIDA = 5 * 60 * 1000;
+	private final int TIEMPO_MAX_DE_VIDA = 1000 * 60 * 5;
+	private final int TIEMPO_SUCIEDAD_INTERMEDIA = 1000 * 20 * 5;
+	private final int TIEMPO_SUCIEDAD_MAXIMA = 1000 * 20 * 10;
 	private final int MAX_TIEMPO_PARA_COMER = 120;
-	private final int TIEMPO_QUE_TARDA_EN_ENSUCIARSE = 20;
 	private final int NUMERO_MAX_PARA_JUGAR = 10;
-	private static final int SUCIEDAD_INTERMEDIA = 5;
-	private final int SUCIEDAD_MAXIMA = 10;
 
 	private Random rnd = new Random();
 	private String nombre;
-	private long horaNacimiento;
+	private long tiempoNacimiento;
+	private long tiempoSuciedad;
 	private Estado estadoActual = Estado.ESPERANDO;
 	private boolean estaVivo = true;
-	private int suciedad = 0;
-
-	private int respuestaCorrectaJuego = 0;
+	private int respuestaSumaJuego = 0;
 
 	public Tamagochi(String nombre) {
-		super();
+
 		this.nombre = nombre;
+
 	}
 
 	@Override
 	public void run() {
-		
-		horaNacimiento = System.currentTimeMillis();
+
+		tiempoNacimiento = System.currentTimeMillis();
+		tiempoSuciedad = tiempoNacimiento;
 
 		while (estaVivo) {
 
-			try {
+			comprobarSuciedad();
 
-				Thread.sleep(TIEMPO_QUE_TARDA_EN_ENSUCIARSE);
+			comprobarTiempoDeVida();
 
-				comprobarSuciedad();
-				
-				comprobarTiempoDeVida();
+		}
 
-			} catch (InterruptedException e) {
+	}
 
-				e.printStackTrace();
+	private void comprobarSuciedad() {
 
-			}
+		long tiempoTranscurrido = System.currentTimeMillis() - tiempoSuciedad;
+
+		if (tiempoTranscurrido >= TIEMPO_SUCIEDAD_MAXIMA) {
+
+			System.out.println("Huele como a muerto...");
+
+			matarlo();
+			
+			return;
+
+		}
+
+		if (tiempoTranscurrido >= TIEMPO_SUCIEDAD_INTERMEDIA) {
+
+			System.out.println("¡" + nombre + " esta empezando a estar muy sucio!");
 
 		}
 
 	}
 
 	private void comprobarTiempoDeVida() {
-		
-		long tiempoVivido = System.currentTimeMillis() - horaNacimiento;
-		
-		if (tiempoVivido > TIEMPO_MAX_DE_VIDA) {
-			
+
+		long tiempoVivido = System.currentTimeMillis() - tiempoNacimiento;
+
+		if (tiempoVivido >= TIEMPO_MAX_DE_VIDA) {
+
 			System.out.println("Parece que " + nombre + " ya es un anciano");
 			matarlo();
-			
-		}
-	}
-
-	private void comprobarSuciedad() {
-
-		if (suciedad == SUCIEDAD_MAXIMA)
-			
-			System.out.println("Huele como a muerto...");
-			matarlo();
-
-		if (suciedad == SUCIEDAD_INTERMEDIA) {
-
-			System.out.println("¡" + nombre + " esta empezando a estar muy sucio!");
 
 		}
-
 	}
 
 	public void darDeComer() {
@@ -121,7 +118,7 @@ public class Tamagochi implements Runnable {
 
 			int num1 = rnd.nextInt(1, NUMERO_MAX_PARA_JUGAR);
 			int num2 = rnd.nextInt(NUMERO_MAX_PARA_JUGAR - num1);
-			respuestaCorrectaJuego = num1 + num2;
+			respuestaSumaJuego = num1 + num2;
 
 			System.out.println("¿Cuánto es " + num1 + " + " + num2 + "?: ");
 
@@ -131,7 +128,7 @@ public class Tamagochi implements Runnable {
 
 	public boolean comprobarRespuestaJuego(int respuesta) {
 
-		boolean esCorrecto = (respuesta == respuestaCorrectaJuego);
+		boolean esCorrecto = (respuesta == respuestaSumaJuego);
 
 		if (esCorrecto)
 			estadoActual = Estado.ESPERANDO;
@@ -151,7 +148,7 @@ public class Tamagochi implements Runnable {
 
 			System.out.println("¡" + nombre + " se está dando una ducha!");
 			Thread.sleep(5);
-			suciedad = 0;
+			tiempoSuciedad = System.currentTimeMillis();
 			System.out.println("¡" + nombre + " ha terminado de ducharse!");
 
 		} catch (InterruptedException e) {

@@ -2,10 +2,7 @@ package org.cuatrovientos.dam.psp.tamagochis;
 
 import java.util.Scanner;
 
-/**
- * Hello world!
- *
- */
+
 public class Cuidador
 {
 	
