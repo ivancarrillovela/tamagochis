@@ -11,6 +11,74 @@ public class Cuidador {
 
 	public static void main(String[] args) {
 
+		crearTamagochisIniciales();
+
+		System.out.println("¡Bienvenidos a la Guardería Tamagochi!");
+
+		boolean salir = false;
+
+		while (!salir) {
+
+			// Mostramos el menú
+			mostrarMenu();
+
+			System.out.print("¿Qué quieres hacer?: ");
+			int opcion;
+
+			// Usamos try-catch por si el usuario no introduce un número
+			try {
+
+				opcion = Integer.parseInt(scanner.nextLine());
+
+			} catch (NumberFormatException e) {
+
+				System.out.println("Error: Debes introducir un número.");
+				continue; // Vuelve al inicio del bucle
+
+			}
+
+			if (opcion == 5) {
+				
+				salir = true;
+				System.out.println("¡Adiós! La guardería está cerrando...");
+				continue;
+			}
+
+			// Pedimos el nombre para las demás opciones (1-4)
+			System.out.print("¿Sobre qué Tamagochi?: ");
+			String nombre = scanner.nextLine();
+			Tamagochi tamagochi = buscarTamagochi(nombre);
+
+			if (tamagochi == null) {
+				
+				System.out.println("No se ha encontrado a " + nombre + " en la guardería.");
+				continue;
+			}
+
+			// Ejecutamos la acción
+			switch (opcion) {
+			case 1:
+				tamagochi.darDeComer();
+				break;
+			case 2:
+				tamagochi.jugar(scanner); // Le pasamos el scanner para que pueda leer la respuesta
+				break;
+			case 3:
+				tamagochi.darUnaDucha();
+				break;
+			case 4:
+				tamagochi.matarlo();
+				guarderia.remove(tamagochi);
+				break;
+			default:
+				System.out.println("Opción no válida.");
+			}
+
+		}
+
+		System.out.println("Saliendo del programa...");
+		scanner.close();
+
 	}
 
 	private static void crearTamagochisIniciales() {
@@ -64,7 +132,7 @@ public class Cuidador {
 		System.out.println(strTamagochis != "" ? strTamagochis : "> No hay Tamagochis vivos actualmente");
 
 	}
-	
+
 	private static Tamagochi buscarTamagochi(String nombreTamagochi) {
 
 		for (Tamagochi t : guarderia.keySet()) {
