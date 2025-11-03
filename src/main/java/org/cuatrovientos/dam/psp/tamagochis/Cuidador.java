@@ -36,6 +36,8 @@ public class Cuidador {
 		System.out.println("4. Matar");
 		System.out.println("5. Salir");
 		System.out.println("---------------------------------");
+		mostrarTamagochisVivos(); // Mostramos los tamagochis vivos
+		System.out.println("---------------------------------");
 
 	}
 
