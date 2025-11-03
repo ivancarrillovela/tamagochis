@@ -27,20 +27,21 @@ public class Cuidador {
 
 			// Usamos try-catch por si el usuario no introduce un número
 			try {
-
 				opcion = Integer.parseInt(scanner.nextLine());
 
 			} catch (NumberFormatException e) {
-
 				System.out.println("Error: Debes introducir un número.");
 				continue; // Vuelve al inicio del bucle
 
 			}
 
 			if (opcion == 5) {
-				
 				salir = true;
 				System.out.println("¡Adiós! La guardería está cerrando...");
+				for (Thread hilo : guarderia.values()) {
+					hilo.interrupt();
+				}
+
 				continue;
 			}
 
@@ -50,7 +51,6 @@ public class Cuidador {
 			Tamagochi tamagochi = buscarTamagochi(nombre);
 
 			if (tamagochi == null) {
-				
 				System.out.println("No se ha encontrado a " + nombre + " en la guardería.");
 				continue;
 			}
@@ -74,6 +74,10 @@ public class Cuidador {
 				System.out.println("Opción no válida.");
 			}
 
+			if (!hayAlgunTamagochiVivo()) {
+				salir = true;
+			}
+
 		}
 
 		System.out.println("Saliendo del programa...");
@@ -84,7 +88,6 @@ public class Cuidador {
 	private static void crearTamagochisIniciales() {
 
 		for (String n : NOMBRES_TAMAGOCHIS) {
-
 			Tamagochi tamagochi = new Tamagochi(n);
 			Thread hilo = new Thread(tamagochi);
 
@@ -112,33 +115,29 @@ public class Cuidador {
 	private static void mostrarTamagochisVivos() {
 
 		if (guarderia.isEmpty()) {
-
-			System.out.println("> No hay Tamagochis en la guardería");
+			System.out.println("> No hay tamagochis en la guardería");
 			return;
 
 		}
 		String strTamagochis = "";
 
 		for (Tamagochi t : guarderia.keySet()) {
-
 			if (t.getEstaVivo()) {
-
 				strTamagochis += "> " + t.getNombre() + "  ";
 
 			}
 
 		}
 
-		System.out.println(strTamagochis != "" ? strTamagochis : "> No hay Tamagochis vivos actualmente");
+		System.out.println(strTamagochis != "" ? strTamagochis : "> No hay tamagochis vivos");
+		
 
 	}
 
 	private static Tamagochi buscarTamagochi(String nombreTamagochi) {
 
 		for (Tamagochi t : guarderia.keySet()) {
-
 			if (t.getNombre().equals(nombreTamagochi)) {
-
 				return t;
 
 			}
@@ -146,6 +145,22 @@ public class Cuidador {
 		}
 
 		return null;
+
+	}
+
+	private static boolean hayAlgunTamagochiVivo() {
+
+		for (Tamagochi t : guarderia.keySet()) {
+			if (t.getEstaVivo() == true) {
+				return true;
+
+			}
+
+		}
+		
+		System.out.println("¡NO QUEDAN TAMAGOCHIS VIVOS!");
+		return false;
+
 	}
 
 }

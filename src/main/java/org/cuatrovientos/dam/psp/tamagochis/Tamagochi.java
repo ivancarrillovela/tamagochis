@@ -31,11 +31,15 @@ public class Tamagochi implements Runnable {
 	}
 
 	public String getNombre() {
+
 		return nombre;
+
 	}
-	
+
 	public boolean getEstaVivo() {
+
 		return estaVivo;
+
 	}
 
 	@Override
@@ -62,19 +66,13 @@ public class Tamagochi implements Runnable {
 
 			// La opción Salir del Cuidador me hace saltar esta excepción con .interrupt()
 		} catch (InterruptedException e) {
-
 			System.out.println(nombre + " ha sido interrumpido por el Cuidador. ¡Se va a dormir!");
-
 		} catch (Exception e) {
-			
 			// Capturamos cualquier otro error
 			System.out.println("El hilo de " + nombre + " ha fallado: " + e.getMessage());
-			
 		} finally {
-			
 			// Pase lo que pase, al final marcamos que ya no esta vivo
 			estaVivo = false;
-
 		}
 
 	}
@@ -84,18 +82,14 @@ public class Tamagochi implements Runnable {
 		long tiempoTranscurrido = System.currentTimeMillis() - tiempoSuciedad;
 
 		if (tiempoTranscurrido >= TIEMPO_SUCIEDAD_MAXIMA) {
-
 			System.out.println("\nHuele como a muerto...");
 			matarlo();
 			return;
-
 		}
 
 		if (tiempoTranscurrido >= TIEMPO_SUCIEDAD_INTERMEDIA && !avisoSuciedad) {
-
 			avisoSuciedad = true;
 			System.out.println("\n¡" + nombre + " esta empezando a estar muy sucio!");
-
 		}
 
 	}
@@ -105,10 +99,8 @@ public class Tamagochi implements Runnable {
 		long tiempoVivido = System.currentTimeMillis() - tiempoNacimiento;
 
 		if (tiempoVivido >= TIEMPO_DE_VIDA) {
-
 			System.out.println("\nParece que " + nombre + " ya es un anciano");
 			matarlo();
-
 		}
 	}
 
@@ -119,7 +111,6 @@ public class Tamagochi implements Runnable {
 		}
 
 		try {
-
 			int tiempoEnComer = rnd.nextInt(MAX_TIEMPO_PARA_COMER);
 			estadoActual = Estado.COMIENDO;
 
@@ -128,11 +119,9 @@ public class Tamagochi implements Runnable {
 			System.out.println("¡" + nombre + " ha terminado de comer!");
 
 		} catch (InterruptedException e) {
-
 			System.out.println(nombre + " ha sido interrumpido mientras comía...");
 
 		} finally {
-
 			estadoActual = Estado.ESPERANDO;
 
 		}
@@ -146,7 +135,6 @@ public class Tamagochi implements Runnable {
 		}
 
 		try {
-
 			estadoActual = Estado.JUGANDO;
 			System.out.println("¡" + nombre + " ha empezado a jugar!");
 
@@ -158,7 +146,6 @@ public class Tamagochi implements Runnable {
 			boolean esCorrecto = false;
 
 			while (!esCorrecto) {
-
 				System.out.println("¿Cuánto es " + num1 + " + " + num2 + "?: ");
 				respuestaCuidador = Integer.parseInt(scanner.nextLine());
 
@@ -170,11 +157,9 @@ public class Tamagochi implements Runnable {
 			}
 
 		} catch (Exception e) {
-
 			System.out.println(nombre + " ha sido interrumpido mientras jugabais...");
 
 		} finally {
-
 			estadoActual = Estado.ESPERANDO;
 
 		}
@@ -188,7 +173,6 @@ public class Tamagochi implements Runnable {
 		}
 
 		try {
-
 			estadoActual = Estado.DUCHANDOSE;
 
 			System.out.println("¡" + nombre + " se está dando una ducha!");
@@ -197,11 +181,8 @@ public class Tamagochi implements Runnable {
 			System.out.println("¡" + nombre + " ha terminado de ducharse!");
 
 		} catch (InterruptedException e) {
-
 			System.out.println(nombre + " ha sido interrumpido mientras se daba una ducha... ¡Vaya vergüenza!");
-
 		} finally {
-
 			estadoActual = Estado.ESPERANDO;
 
 		}
@@ -223,7 +204,6 @@ public class Tamagochi implements Runnable {
 	private boolean comprobarSiEstaOcupado() {
 
 		if (estadoActual != Estado.ESPERANDO) {
-
 			System.out.println(
 					nombre + " ahora mismo esta " + estadoActual.toString() + " ¡Tienes que esperar a que termine!");
 
