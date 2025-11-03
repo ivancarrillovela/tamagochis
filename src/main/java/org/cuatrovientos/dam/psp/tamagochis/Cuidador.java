@@ -64,5 +64,20 @@ public class Cuidador {
 		System.out.println(strTamagochis != "" ? strTamagochis : "> No hay Tamagochis vivos actualmente");
 
 	}
+	
+	private static Tamagochi buscarTamagochi(String nombreTamagochi) {
+
+		for (Tamagochi t : guarderia.keySet()) {
+
+			if (t.getNombre().equals(nombreTamagochi)) {
+
+				return t;
+
+			}
+
+		}
+
+		return null;
+	}
 
 }
