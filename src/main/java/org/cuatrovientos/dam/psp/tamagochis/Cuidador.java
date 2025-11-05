@@ -41,7 +41,6 @@ public class Cuidador {
 				for (Thread hilo : guarderia.values()) {
 					hilo.interrupt();
 				}
-
 				continue;
 			}
 

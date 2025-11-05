@@ -51,19 +51,20 @@ public class Tamagochi implements Runnable {
 		try {
 
 			while (estaVivo) {
-
-				Thread.sleep(1000);
-
-				if (estaVivo) {
-					comprobarSuciedad();
+				
+				if (estadoActual == Estado.COMIENDO) {
+					this.darDeComer();
+				}
+				
+				if (estadoActual == Estado.DUCHANDOSE) {
+					this.darUnaDucha();
 				}
 
-				if (estaVivo) {
-					comprobarTiempoDeVida();
-				}
+				comprobarSuciedad();
+				
+				comprobarTiempoDeVida();
 
 			}
-
 			// La opción Salir del Cuidador me hace saltar esta excepción con .interrupt()
 		} catch (InterruptedException e) {
 			System.out.println(nombre + " ha sido interrumpido por el Cuidador. ¡Se va a dormir!");
@@ -83,7 +84,7 @@ public class Tamagochi implements Runnable {
 
 		if (tiempoTranscurrido >= TIEMPO_SUCIEDAD_MAXIMA) {
 			System.out.println("\nHuele como a muerto...");
-			matarlo();
+			matar();
 			return;
 		}
 
@@ -100,12 +101,12 @@ public class Tamagochi implements Runnable {
 
 		if (tiempoVivido >= TIEMPO_DE_VIDA) {
 			System.out.println("\nParece que " + nombre + " ya es un anciano");
-			matarlo();
+			matar();
 		}
 	}
 	
 
-	public void darDeComer() {
+	public void comer() {
 		
 		if (comprobarSiEstaOcupado() || comprobarSiEstaMuerto()) {
 			return;
@@ -114,27 +115,15 @@ public class Tamagochi implements Runnable {
 		estadoActual = Estado.COMIENDO;
 	}
 	
-	
-
-	public void comer() {
-
-		try {
-			int tiempoEnComer = rnd.nextInt(MAX_TIEMPO_PARA_COMER);
-			estadoActual = Estado.COMIENDO;
-
-			System.out.println("¡" + nombre + " ha empezado a comer!");
-			Thread.sleep(tiempoEnComer);
-			System.out.println("¡" + nombre + " ha terminado de comer!");
-
-		} catch (InterruptedException e) {
-			System.out.println(nombre + " ha sido interrumpido mientras comía...");
-
-		} finally {
-			estadoActual = Estado.ESPERANDO;
-
+	public void duchar() {
+		if (comprobarSiEstaOcupado() || comprobarSiEstaMuerto()) {
+			return;
 		}
-
+		
+		estadoActual = Estado.DUCHANDOSE;
 	}
+	
+	
 
 	public void jugar(Scanner scanner) {
 
@@ -173,16 +162,40 @@ public class Tamagochi implements Runnable {
 		}
 
 	}
-	
-	public void darUnaDucha() {
+
+	public void matar() {
+
 		if (comprobarSiEstaOcupado() || comprobarSiEstaMuerto()) {
 			return;
 		}
-		
-		estadoActual = Estado.DUCHANDOSE;
-	}
 
-	public void ducha() {
+		estaVivo = false;
+
+		System.out.println("R.I.P " + nombre + " acaba de morir...");
+
+	}
+	
+	private void darDeComer() {
+
+		try {
+			int tiempoEnComer = rnd.nextInt(MAX_TIEMPO_PARA_COMER);
+			estadoActual = Estado.COMIENDO;
+
+			System.out.println("¡" + nombre + " ha empezado a comer!");
+			Thread.sleep(tiempoEnComer);
+			System.out.println("¡" + nombre + " ha terminado de comer!");
+
+		} catch (InterruptedException e) {
+			System.out.println(nombre + " ha sido interrumpido mientras comía...");
+
+		} finally {
+			estadoActual = Estado.ESPERANDO;
+
+		}
+
+	}
+	
+	private void darUnaDucha() {
 
 		try {
 
@@ -197,18 +210,6 @@ public class Tamagochi implements Runnable {
 			estadoActual = Estado.ESPERANDO;
 
 		}
-
-	}
-
-	public void matarlo() {
-
-		if (comprobarSiEstaOcupado() || comprobarSiEstaMuerto()) {
-			return;
-		}
-
-		estaVivo = false;
-
-		System.out.println("R.I.P " + nombre + " acaba de morir...");
 
 	}
 
