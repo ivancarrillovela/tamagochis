@@ -21,14 +21,14 @@ public class Cuidador {
 
 		while (!salir) {
 
+			// Mostrar menú y pedir opción
+			mostrarMenu();
+
 			// Si no queda ninguno vivo, se fuerza la salida del bucle
 			if (!hayAlgunTamagochiVivo()) {
 				salir = true;
 				continue; // Salta al final del bucle (y al ser salir == true terminará)
 			}
-
-			// Mostrar menú y pedir opción
-			mostrarMenu();
 
 			System.out.print("¿Qué quieres hacer?: ");
 			int opcion;
@@ -59,7 +59,7 @@ public class Cuidador {
 
 			// Pedir nombre para las opciones 1-4
 			System.out.print("¿Sobre qué Tamagochi?: ");
-			String nombre = scanner.nextLine();
+			String nombre = scanner.nextLine().toUpperCase();
 			Tamagochi tamagochi = buscarTamagochi(nombre); // Busca el objeto Tamagochi
 
 			// Validación del nombre
@@ -184,7 +184,7 @@ public class Cuidador {
 			}
 		}
 		// Si el bucle termina significa que no encontró a ninguno vivo
-		System.out.println("¡NO QUEDAN TAMAGOCHIS VIVOS!");
+		System.out.println("¡TODOS LOS TAMAGOCHIS ESTÁN MUERTOS!");
 		System.out.println("Se cierra la guardería...");
 		return false; // Devuelve false
 	}

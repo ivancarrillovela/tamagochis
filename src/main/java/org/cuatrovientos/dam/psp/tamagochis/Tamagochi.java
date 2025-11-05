@@ -44,7 +44,7 @@ public class Tamagochi implements Runnable {
 	 * @param nombre El nombre que tendrá el Tamagochi.
 	 */
 	public Tamagochi(String nombre) {
-		this.nombre = nombre;
+		this.nombre = nombre.toUpperCase();
 	}
 
 	/**
