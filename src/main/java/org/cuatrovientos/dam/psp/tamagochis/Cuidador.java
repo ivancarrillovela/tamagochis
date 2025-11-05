@@ -57,13 +57,13 @@ public class Cuidador {
 			// Ejecutamos la acción
 			switch (opcion) {
 			case 1:
-				tamagochi.darDeComer();
+				tamagochi.comer();
 				break;
 			case 2:
 				tamagochi.jugar(scanner); // Le pasamos el scanner para que pueda leer la respuesta
 				break;
 			case 3:
-				tamagochi.darUnaDucha();
+				tamagochi.duchar();
 				break;
 			case 4:
 				tamagochi.matar();

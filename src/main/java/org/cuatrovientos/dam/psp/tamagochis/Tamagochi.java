@@ -52,6 +52,8 @@ public class Tamagochi implements Runnable {
 
 			while (estaVivo) {
 				
+				Thread.sleep(1000);
+				
 				if (estadoActual == Estado.COMIENDO) {
 					this.darDeComer();
 				}
@@ -66,8 +68,6 @@ public class Tamagochi implements Runnable {
 
 			}
 			// La opción Salir del Cuidador me hace saltar esta excepción con .interrupt()
-		} catch (InterruptedException e) {
-			System.out.println(nombre + " ha sido interrumpido por el Cuidador. ¡Se va a dormir!");
 		} catch (Exception e) {
 			// Capturamos cualquier otro error
 			System.out.println("El hilo de " + nombre + " ha fallado: " + e.getMessage());
