@@ -67,7 +67,7 @@ public class Cuidador {
 				tamagochi.darUnaDucha();
 				break;
 			case 4:
-				tamagochi.matarlo();
+				tamagochi.matar();
 				guarderia.remove(tamagochi);
 				break;
 			default:
@@ -100,7 +100,7 @@ public class Cuidador {
 
 	private static void mostrarMenu() {
 
-		System.out.println("\n------ GUARDERÍA TAMAGOCHI ------");
+		System.out.println("------ GUARDERÍA TAMAGOCHI ------");
 		System.out.println("1. Dar de comer");
 		System.out.println("2. Jugar");
 		System.out.println("3. Duchar");
@@ -130,7 +130,6 @@ public class Cuidador {
 		}
 
 		System.out.println(strTamagochis != "" ? strTamagochis : "> No hay tamagochis vivos");
-		
 
 	}
 
@@ -157,7 +156,7 @@ public class Cuidador {
 			}
 
 		}
-		
+
 		System.out.println("¡NO QUEDAN TAMAGOCHIS VIVOS!");
 		return false;
 

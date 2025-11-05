@@ -103,12 +103,20 @@ public class Tamagochi implements Runnable {
 			matarlo();
 		}
 	}
+	
 
 	public void darDeComer() {
-
+		
 		if (comprobarSiEstaOcupado() || comprobarSiEstaMuerto()) {
 			return;
 		}
+		
+		estadoActual = Estado.COMIENDO;
+	}
+	
+	
+
+	public void comer() {
 
 		try {
 			int tiempoEnComer = rnd.nextInt(MAX_TIEMPO_PARA_COMER);
@@ -165,15 +173,18 @@ public class Tamagochi implements Runnable {
 		}
 
 	}
-
+	
 	public void darUnaDucha() {
-
 		if (comprobarSiEstaOcupado() || comprobarSiEstaMuerto()) {
 			return;
 		}
+		
+		estadoActual = Estado.DUCHANDOSE;
+	}
+
+	public void ducha() {
 
 		try {
-			estadoActual = Estado.DUCHANDOSE;
 
 			System.out.println("¡" + nombre + " se está dando una ducha!");
 			Thread.sleep(DURACION_DUCHA);
